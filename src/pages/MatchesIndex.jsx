@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const API_BASE_URL = "/api"; // Proxy Vite → Laravel localhost:8000
 
@@ -49,11 +50,13 @@ const MatchCard = ({ match, index }) => {
   const isClosed = match.status === "cancelled" || match.status === "finished";
   const price = parseFloat(match.price);
   const statusColor = STATUS_COLORS[match.status] ?? "#22c55e";
+  const navigate = useNavigate();
 
   return (
     <article
       className="match-card"
-      style={{ animationDelay: `${index * 60}ms` }}
+      style={{ animationDelay: `${index * 60}ms`, cursor: "pointer" }}
+      onClick={() => navigate(`/matches/${match.id}`)}
     >
       {/* Banda lateral de fecha */}
       <div className="card-date-band">
