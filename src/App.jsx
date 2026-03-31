@@ -4,6 +4,7 @@ import MatchesIndex from "./pages/MatchesIndex";
 import MatchDetail from "./pages/MatchDetail";
 import ProtectedRoute from "./router/ProtectedRoute";
 import Navbar from "./components/Navbar";
+import MatchCreate from "./pages/MatchCreate";
 
 // Layout con Navbar (para todas las páginas excepto auth)
 function AppLayout() {
@@ -30,9 +31,9 @@ export default function App() {
           <Route path="/matches/:id" element={<MatchDetail />} />
 
           {/* Protegidas (añade aquí las que requieran auth:api) */}
-          {/* <Route path="/matches/create" element={
+          {<Route path="/matches/create" element={
             <ProtectedRoute><MatchCreate /></ProtectedRoute>
-          } /> */}
+          } />}
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

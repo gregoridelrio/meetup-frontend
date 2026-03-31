@@ -158,6 +158,11 @@ export default function Navbar() {
                   <span className="navbar-username">{user.name}</span>
                 </div>
               )}
+              {isAuth && (
+                <Link to="/matches/create" className="navbar-btn navbar-btn-primary">
+                  + Crear partido
+                </Link>
+              )}
               <div className="navbar-divider" />
               <button className="navbar-btn navbar-btn-logout" onClick={handleLogout}>
                 Cerrar sesión
