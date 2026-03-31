@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect, useCallback } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const API_BASE_URL = "/api";
 
@@ -116,9 +117,8 @@ const HeroSection = ({ match }) => {
   );
 };
 
-const InfoGrid = ({ match }) => {
-  const registrations = match.registrations?.length ?? 0;
-  const spotsLeft = match.max_players - registrations;
+const InfoGrid = ({ match, registrationCount = 0 }) => {
+  const spotsLeft = match.max_players - registrationCount;
 
   return (
     <div className="info-grid">
@@ -139,14 +139,14 @@ const InfoGrid = ({ match }) => {
         </div>
         <div>
           <div className="info-label">Jugadores</div>
-          <div className="info-value">{registrations} / {match.max_players}</div>
+          <div className="info-value">{registrationCount} / {match.max_players}</div>
           <div className="info-sub">{spotsLeft > 0 ? `${spotsLeft} plazas libres` : "Sin plazas"}</div>
         </div>
         {/* Barra de progreso */}
         <div className="players-bar">
           <div
             className="players-bar-fill"
-            style={{ width: `${Math.min((registrations / match.max_players) * 100, 100)}%` }}
+            style={{ width: `${Math.min((registrationCount / match.max_players) * 100, 100)}%` }}
           />
         </div>
       </div>
@@ -206,27 +206,42 @@ const CommentsSection = ({ comments }) => {
   );
 };
 
-const JoinBar = ({ match }) => {
-  const registrations = match.registrations?.length ?? 0;
-  const isFull = match.status === "full" || registrations >= match.max_players;
+const JoinBar = ({ match, registrationCount, isJoined, onJoin, onLeave, joining }) => {
+  const isFull = match.status === "full" || registrationCount >= match.max_players;
   const isClosed = match.status === "cancelled" || match.status === "finished";
   const price = parseFloat(match.price);
+  const spotsLeft = match.max_players - registrationCount;
+
+  const getLabel = () => {
+    if (joining) return <><div className="btn-spinner" />Procesando...</>;
+    if (isClosed) return match.status === "cancelled" ? "Cancelado" : "Finalizado";
+    if (isJoined) return "Abandonar partido";
+    if (isFull) return "Partido completo";
+    return "Unirse al partido →";
+  };
+
+  const handleClick = () => {
+    if (isJoined) onLeave();
+    else onJoin();
+  };
 
   return (
     <div className="join-bar">
       <div className="join-bar-info">
         <span className="join-bar-price">{price === 0 ? "Gratis" : `${price}€`}</span>
         <span className="join-bar-spots">
-          {isFull ? "Sin plazas disponibles" : isClosed ? "" : `${match.max_players - registrations} plazas libres`}
+          {isClosed ? ""
+            : isFull && !isJoined ? "Sin plazas disponibles"
+              : isJoined ? "Ya estás apuntado"
+                : `${spotsLeft} plaza${spotsLeft !== 1 ? "s" : ""} libre${spotsLeft !== 1 ? "s" : ""}`}
         </span>
       </div>
       <button
-        className="join-bar-btn"
-        disabled={isFull || isClosed}
+        className={`join-bar-btn${isJoined ? " join-bar-btn--leave" : ""}`}
+        disabled={(!isJoined && (isFull || isClosed)) || joining}
+        onClick={handleClick}
       >
-        {isFull ? "Partido completo"
-          : isClosed ? (match.status === "cancelled" ? "Cancelado" : "Finalizado")
-            : "Unirse al partido →"}
+        {getLabel()}
       </button>
     </div>
   );
@@ -250,12 +265,19 @@ const DetailSkeleton = () => (
 export default function MatchDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { isAuth, token } = useAuth();
+
   const [match, setMatch] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [registrationCount, setRegistrationCount] = useState(0);
+  const [isJoined, setIsJoined] = useState(false);
+  const [joining, setJoining] = useState(false);
+  const [joinFeedback, setJoinFeedback] = useState(null);
 
   useEffect(() => {
-    const fetch_ = async () => {
+    const fetchMatch = async () => {
       setLoading(true);
       setError(null);
       try {
@@ -265,14 +287,62 @@ export default function MatchDetail() {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         setMatch(data);
+        setRegistrationCount(data.registrations?.length ?? 0);
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-    fetch_();
+    fetchMatch();
   }, [id]);
+
+  const showFeedback = (type, msg) => {
+    setJoinFeedback({ type, msg });
+    setTimeout(() => setJoinFeedback(null), 3500);
+  };
+
+  const handleJoin = useCallback(async () => {
+    if (!isAuth) {
+      navigate("/login", { state: { from: location.pathname } });
+      return;
+    }
+    setJoining(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/matches/${id}/players`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message ?? "Error al unirse");
+      setIsJoined(true);
+      setRegistrationCount((c) => c + 1);
+      showFeedback("success", "¡Te has unido al partido!");
+    } catch (err) {
+      showFeedback("error", err.message);
+    } finally {
+      setJoining(false);
+    }
+  }, [isAuth, token, id, location.pathname, navigate]);
+
+  const handleLeave = useCallback(async () => {
+    setJoining(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/matches/${id}/players`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message ?? "Error al abandonar");
+      setIsJoined(false);
+      setRegistrationCount((c) => Math.max(0, c - 1));
+      showFeedback("success", "Has abandonado el partido.");
+    } catch (err) {
+      showFeedback("error", err.message);
+    } finally {
+      setJoining(false);
+    }
+  }, [token, id]);
 
   return (
     <>
@@ -666,6 +736,22 @@ export default function MatchDetail() {
         }
         .comments-empty span { font-size: 28px; }
 
+        /* ── FEEDBACK TOAST ── */
+        .join-toast {
+          position: fixed;
+          bottom: 90px; left: 50%; transform: translateX(-50%);
+          padding: 12px 20px; border-radius: 10px;
+          font-size: 14px; font-weight: 600; font-family: 'DM Sans', sans-serif;
+          z-index: 300; animation: toastIn 0.25s ease both;
+          white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+        }
+        .join-toast--success { background: #25671E; color: #F7F0F0; }
+        .join-toast--error   { background: #e05c2a; color: #fff; }
+        @keyframes toastIn {
+          from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+          to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
         /* ── JOIN BAR (sticky) ── */
         .join-bar {
           position: fixed;
@@ -713,6 +799,10 @@ export default function MatchDetail() {
           color: #b8afaf;
           cursor: not-allowed;
         }
+        .join-bar-btn--leave { background: #fff0eb; color: #e05c2a; border: 1.5px solid #f0c4b0; }
+        .join-bar-btn--leave:hover:not(:disabled) { background: #e05c2a; color: #fff; transform: scale(1.02); }
+        .btn-spinner { width: 14px; height: 14px; border: 2px solid rgba(0,0,0,0.15); border-top-color: currentColor; border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         /* ── SKELETON ── */
         .detail-skeleton { animation: pulse 1.5s ease infinite; }
@@ -770,15 +860,13 @@ export default function MatchDetail() {
           <>
             <HeroSection match={match} />
 
-            <InfoGrid match={match} />
+            <InfoGrid match={match} registrationCount={registrationCount} />
 
-            {/* Organizador */}
             <div className="section" style={{ animationDelay: "60ms" }}>
               <div className="section-title">Organizador</div>
               <OrganizerCard organizer={match.organizer} />
             </div>
 
-            {/* Comentarios */}
             <div className="section" style={{ animationDelay: "120ms" }}>
               <div className="section-title">
                 Comentarios
@@ -790,8 +878,24 @@ export default function MatchDetail() {
         )}
       </div>
 
+      {/* Toast feedback */}
+      {joinFeedback && (
+        <div className={`join-toast join-toast--${joinFeedback.type}`}>
+          {joinFeedback.type === "success" ? "✓" : "⚠"} {joinFeedback.msg}
+        </div>
+      )}
+
       {/* Sticky join bar */}
-      {!loading && !error && match && <JoinBar match={match} />}
+      {!loading && !error && match && (
+        <JoinBar
+          match={match}
+          registrationCount={registrationCount}
+          isJoined={isJoined}
+          onJoin={handleJoin}
+          onLeave={handleLeave}
+          joining={joining}
+        />
+      )}
     </>
   );
 }
