@@ -5,6 +5,7 @@ import MatchDetail from "./pages/MatchDetail";
 import ProtectedRoute from "./router/ProtectedRoute";
 import Navbar from "./components/Navbar";
 import MatchCreate from "./pages/MatchCreate";
+import MatchEdit from "./pages/MatchEdit";
 
 // Layout con Navbar (para todas las páginas excepto auth)
 function AppLayout() {
@@ -32,7 +33,12 @@ export default function App() {
 
           {/* Protegidas (añade aquí las que requieran auth:api) */}
           {<Route path="/matches/create" element={
-            <ProtectedRoute><MatchCreate /></ProtectedRoute>
+            <ProtectedRoute><MatchCreate />
+            </ProtectedRoute>
+
+          } />}
+          {<Route path="/matches/:id/edit" element={
+            <ProtectedRoute><MatchEdit /></ProtectedRoute>
           } />}
         </Route>
 
