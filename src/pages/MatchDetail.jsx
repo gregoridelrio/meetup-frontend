@@ -186,26 +186,123 @@ const OrganizerCard = ({ organizer }) => (
   </div>
 );
 
-const CommentsSection = ({ comments }) => {
-  if (!comments || comments.length === 0) {
-    return (
-      <div className="comments-empty">
-        <span>💬</span>
-        <p>Nadie ha comentado aún. ¡Sé el primero!</p>
-      </div>
-    );
-  }
+const CommentsSection = ({ matchId, isAuth, token, user }) => {
+  const [comments, setComments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [content, setContent] = useState("");
+  const [sending, setSending] = useState(false);
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/matches/${matchId}/comments`, {
+          headers: { Accept: "application/json" },
+        });
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        setComments(Array.isArray(data) ? data : data.data ?? []);
+      } catch {
+        // silencioso, los comentarios no son críticos
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchComments();
+  }, [matchId]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!content.trim()) return;
+    setSending(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/matches/${matchId}/comments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ content }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message ?? "Error al comentar");
+
+      // Añade el comentario inmediatamente con los datos del usuario actual
+      const newComment = {
+        ...data.comment,
+        user: {
+          id: user.id,
+          name: user.name,
+          skill_level: user.skill_level,
+          rank: user.rank,
+          favourite_position: user.favourite_position,
+          activity_score: user.activity_score,
+          role: user.role,
+        },
+      };
+      setComments((prev) => [...prev, newComment]);
+      setContent("");
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const LEVEL_LABELS = {
+    beginner: "Principiante",
+    intermediate: "Intermedio",
+    advanced: "Avanzado",
+  };
+
+  if (loading) return <p>Cargando comentarios...</p>;
+
   return (
-    <div className="comments-list">
-      {comments.map((c, i) => (
-        <div key={c.id} className="comment-item" style={{ animationDelay: `${i * 50}ms` }}>
-          <div className="comment-avatar">#</div>
-          <div className="comment-body">
-            <div className="comment-content">{c.content}</div>
-            <div className="comment-time">{formatRelative(c.created_at)}</div>
-          </div>
+    <div>
+      {comments.length === 0 ? (
+        <div className="comments-empty">
+          <span>💬</span>
+          <p>Nadie ha comentado aún. ¡Sé el primero!</p>
         </div>
-      ))}
+      ) : (
+        <div className="comments-list">
+          {comments.map((c, i) => (
+            <div key={c.id} className="comment-item" style={{ animationDelay: `${i * 50}ms` }}>
+              <div className="comment-avatar">
+                {c.user?.name?.[0]?.toUpperCase() ?? "#"}
+              </div>
+              <div className="comment-body">
+                <div className="comment-meta">
+                  <strong className="comment-author">{c.user?.name}</strong>
+                  <span className="comment-skill">
+                    {LEVEL_LABELS[c.user?.skill_level] ?? c.user?.skill_level}
+                  </span>
+                  <span className="comment-rank">{c.user?.rank}</span>
+                </div>
+                <div className="comment-content">{c.content}</div>
+                <div className="comment-time">{formatRelative(c.created_at)}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Formulario — solo si está autenticado */}
+      {isAuth && (
+        <form onSubmit={handleSubmit} className="comment-form">
+          <input
+            type="text"
+            className="comment-input"
+            placeholder="Escribe un comentario..."
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            disabled={sending}
+          />
+          <button className="comment-submit" type="submit" disabled={sending || !content.trim()}>
+            {sending ? "Enviando..." : "Enviar"}
+          </button>
+        </form>
+      )}
     </div>
   );
 };
@@ -392,7 +489,12 @@ export default function MatchDetail() {
                 Comentarios
                 <span className="section-title-count">{match.comments?.length ?? 0}</span>
               </div>
-              <CommentsSection comments={match.comments} />
+              <CommentsSection
+                matchId={id}
+                isAuth={isAuth}
+                token={token}
+                user={user}
+              />
             </div>
           </>
         )}
