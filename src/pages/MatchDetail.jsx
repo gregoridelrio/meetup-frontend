@@ -56,10 +56,11 @@ const BackButton = ({ onClick }) => (
   </button>
 );
 
-const HeroSection = ({ match, isOrganizer, onEdit }) => {
+const HeroSection = ({ match, isOrganizer, isAdmin, onEdit, onDelete }) => {
   const dt = formatDateTime(match.starts_at);
   const status = STATUS_MAP[match.status] ?? STATUS_MAP.open;
   const price = parseFloat(match.price);
+  const canEdit = isOrganizer || isAdmin;
 
   return (
     <div className="hero">
@@ -82,13 +83,25 @@ const HeroSection = ({ match, isOrganizer, onEdit }) => {
             <span className="hero-status-badge" style={{ "--sc": status.color }}>
               {status.label}
             </span>
-            {isOrganizer && (
+            {canEdit && (
               <button className="hero-edit-btn" onClick={onEdit}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                   <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                 </svg>
                 Editar partido
+              </button>
+            )}
+            {isAdmin && (
+              <button className="hero-delete-btn" onClick={onDelete}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6l-1 14H6L5 6" />
+                  <path d="M10 11v6" />
+                  <path d="M14 11v6" />
+                  <path d="M9 6V4h6v2" />
+                </svg>
+                Eliminar
               </button>
             )}
           </div>
@@ -248,7 +261,6 @@ export default function MatchDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  // ✅ FIX: añadido `user` al destructuring
   const { isAuth, token, user } = useAuth();
 
   const [match, setMatch] = useState(null);
@@ -327,7 +339,22 @@ export default function MatchDetail() {
     }
   }, [token, id]);
 
+  const handleDelete = useCallback(async () => {
+    if (!window.confirm("¿Seguro que quieres eliminar este partido?")) return;
+    try {
+      const res = await fetch(`${API_BASE_URL}/matches/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+      });
+      if (!res.ok) throw new Error("Error al eliminar");
+      navigate("/");
+    } catch (err) {
+      showFeedback("error", err.message);
+    }
+  }, [token, id, navigate]);
+
   const isOrganizer = !!user && match?.organizer?.id === user.id;
+  const isAdmin = user?.role === "admin";
 
   return (
     <>
@@ -351,7 +378,9 @@ export default function MatchDetail() {
             <HeroSection
               match={match}
               isOrganizer={isOrganizer}
+              isAdmin={isAdmin}
               onEdit={() => navigate(`/matches/${id}/edit`)}
+              onDelete={handleDelete}
             />
             <InfoGrid match={match} registrationCount={registrationCount} />
             <div className="section" style={{ animationDelay: "60ms" }}>
