@@ -159,6 +159,11 @@ export default function Navbar() {
                 </div>
               )}
               {isAuth && (
+                <Link to="/my-matches" className="navbar-btn navbar-btn-ghost">
+                  Mis partidos
+                </Link>
+              )}
+              {isAuth && (
                 <Link to="/matches/create" className="navbar-btn navbar-btn-primary">
                   + Crear partido
                 </Link>
