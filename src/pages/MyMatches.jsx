@@ -58,9 +58,52 @@ export default function MyMatches() {
     fetchMyMatches();
   }, [token]);
 
+  const [stats, setStats] = useState(null);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/users/stats`, {
+          headers: { Accept: "application/json", Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        setStats(data);
+      } catch {
+        // silencioso
+      }
+    };
+    fetchStats();
+  }, [token]);
+
   return (
+
     <div className="my-matches-page">
       <div className="my-matches-header">
+        {stats && (
+          <div className="user-stats-bar">
+            <div className="user-stat">
+              <span className="user-stat-val">{stats.matches_organized}</span>
+              <span className="user-stat-label">Organizados</span>
+            </div>
+            <div className="user-stat">
+              <span className="user-stat-val">{stats.matches_joined}</span>
+              <span className="user-stat-label">Apuntado</span>
+            </div>
+            <div className="user-stat">
+              <span className="user-stat-val">{stats.total_comments}</span>
+              <span className="user-stat-label">Comentarios</span>
+            </div>
+            <div className="user-stat">
+              <span className="user-stat-val">{stats.activity_score}</span>
+              <span className="user-stat-label">Puntuación</span>
+            </div>
+            <div className="user-stat">
+              <span className="user-stat-val">{stats.rank}</span>
+              <span className="user-stat-label">Rango</span>
+            </div>
+          </div>
+        )}
         <h1 className="my-matches-title">Mis Partidos</h1>
         <p className="my-matches-sub">Partidos en los que estás apuntado.</p>
       </div>
