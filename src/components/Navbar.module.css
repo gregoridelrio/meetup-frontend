@@ -1,0 +1,146 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  height: 60px;
+  background: var(--green-dark);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  box-shadow: 0 2px 16px rgba(37, 103, 30, 0.18);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.logoIcon {
+  width: 30px;
+  height: 30px;
+  background: var(--green-main);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.logoName {
+  font-family: var(--font-display);
+  font-size: 20px;
+  letter-spacing: 0.08em;
+  color: var(--cream);
+  white-space: nowrap;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(247, 240, 240, 0.7);
+  text-decoration: none;
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--green-main);
+  color: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.username {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(247, 240, 240, 0.15);
+}
+
+.btn {
+  padding: 7px 16px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btnGhost {
+  background: rgba(247, 240, 240, 0.1);
+  color: var(--cream);
+  border: 1.5px solid rgba(247, 240, 240, 0.2);
+}
+
+.btnGhost:hover {
+  background: rgba(247, 240, 240, 0.18);
+  border-color: rgba(247, 240, 240, 0.4);
+}
+
+.btnPrimary {
+  background: var(--yellow);
+  color: var(--text);
+}
+
+.btnPrimary:hover {
+  background: #e0a608;
+  transform: translateY(-1px);
+}
+
+.btnLogout {
+  background: rgba(224, 92, 42, 0.15);
+  color: #f4a080;
+  border: 1.5px solid rgba(224, 92, 42, 0.25);
+}
+
+.btnLogout:hover {
+  background: rgba(224, 92, 42, 0.25);
+}
+
+.offset {
+  height: 60px;
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0 16px;
+  }
+
+  .username {
+    display: none;
+  }
+
+  .btn {
+    padding: 7px 12px;
+  }
+}
