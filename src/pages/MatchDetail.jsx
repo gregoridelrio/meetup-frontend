@@ -307,6 +307,62 @@ const CommentsSection = ({ matchId, isAuth, token, user }) => {
   );
 };
 
+const PlayersList = ({ matchId, token }) => {
+  const [players, setPlayers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPlayers = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/matches/${matchId}/players`, {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        setPlayers(Array.isArray(data) ? data : data.data ?? []);
+      } catch (err) {
+        console.error("Error cargando jugadores:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPlayers();
+  }, [matchId, token]);
+
+  if (loading) return <p>Cargando jugadores...</p>;
+
+  if (players.length === 0) return (
+    <div className="players-empty">
+      <span>👥</span>
+      <p>Aún no hay jugadores apuntados.</p>
+    </div>
+  );
+
+  return (
+    <div className="players-list">
+      {players.map((reg) => (
+        <div key={reg.id} className="player-item">
+          <div className="player-avatar">
+            {reg.user.name[0].toUpperCase()}
+          </div>
+          <div className="player-info">
+            <span className="player-name">{reg.user.name}</span>
+            <span className="player-meta">
+              {LEVEL_LABELS[reg.user.skill_level] ?? reg.user.skill_level}
+              {" · "}
+              {POSITION_LABELS[reg.user.favourite_position] ?? reg.user.favourite_position}
+            </span>
+          </div>
+          <span className="player-rank">{reg.user.rank}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const JoinBar = ({ match, registrationCount, isJoined, onJoin, onLeave, joining }) => {
   const isFull = match.status === "full" || registrationCount >= match.max_players;
   const isClosed = match.status === "cancelled" || match.status === "finished";
@@ -480,6 +536,12 @@ export default function MatchDetail() {
               onDelete={handleDelete}
             />
             <InfoGrid match={match} registrationCount={registrationCount} />
+            <div className="section" style={{ animationDelay: "60ms" }}>
+              <div className="section-title">
+                Jugadores
+              </div>
+              <PlayersList matchId={id} token={token} />
+            </div>
             <div className="section" style={{ animationDelay: "60ms" }}>
               <div className="section-title">Organizador</div>
               <OrganizerCard organizer={match.organizer} />
