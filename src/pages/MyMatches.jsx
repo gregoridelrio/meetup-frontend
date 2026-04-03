@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import styles from "./MyMatches.module.css";
 
 const API_BASE_URL = "/api";
 
@@ -34,6 +35,7 @@ export default function MyMatches() {
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [stats, setStats] = useState(null);
 
   useEffect(() => {
     const fetchMyMatches = async () => {
@@ -41,10 +43,7 @@ export default function MyMatches() {
       setError(null);
       try {
         const res = await fetch(`${API_BASE_URL}/users/matches`, {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Accept: "application/json", Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
@@ -57,8 +56,6 @@ export default function MyMatches() {
     };
     fetchMyMatches();
   }, [token]);
-
-  const [stats, setStats] = useState(null);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -77,56 +74,59 @@ export default function MyMatches() {
   }, [token]);
 
   return (
+    <div className={styles.page}>
+      <div className={styles.header}>
 
-    <div className="my-matches-page">
-      <div className="my-matches-header">
         {stats && (
-          <div className="user-stats-bar">
-            <div className="user-stat">
-              <span className="user-stat-val">{stats.matches_organized}</span>
-              <span className="user-stat-label">Organizados</span>
+          <div className={styles.statsBar}>
+            <div className={styles.stat}>
+              <span className={styles.statVal}>{stats.matches_organized}</span>
+              <span className={styles.statLabel}>Organizados</span>
             </div>
-            <div className="user-stat">
-              <span className="user-stat-val">{stats.matches_joined}</span>
-              <span className="user-stat-label">Apuntado</span>
+            <div className={styles.stat}>
+              <span className={styles.statVal}>{stats.matches_joined}</span>
+              <span className={styles.statLabel}>Apuntado</span>
             </div>
-            <div className="user-stat">
-              <span className="user-stat-val">{stats.total_comments}</span>
-              <span className="user-stat-label">Comentarios</span>
+            <div className={styles.stat}>
+              <span className={styles.statVal}>{stats.total_comments}</span>
+              <span className={styles.statLabel}>Comentarios</span>
             </div>
-            <div className="user-stat">
-              <span className="user-stat-val">{stats.activity_score}</span>
-              <span className="user-stat-label">Puntuación</span>
+            <div className={styles.stat}>
+              <span className={styles.statVal}>{stats.activity_score}</span>
+              <span className={styles.statLabel}>Puntuación</span>
             </div>
-            <div className="user-stat">
-              <span className="user-stat-val">{stats.rank}</span>
-              <span className="user-stat-label">Rango</span>
+            <div className={styles.stat}>
+              <span className={styles.statVal}>{stats.rank}</span>
+              <span className={styles.statLabel}>Rango</span>
             </div>
           </div>
         )}
-        <h1 className="my-matches-title">Mis Partidos</h1>
-        <p className="my-matches-sub">Partidos en los que estás apuntado.</p>
+
+        <h1 className={styles.title}>Mis Partidos</h1>
+        <p className={styles.sub}>Partidos en los que estás apuntado.</p>
       </div>
 
       {loading && <p>Cargando partidos...</p>}
 
       {!loading && error && (
-        <div className="my-matches-error">
+        <div className={styles.error}>
           <span>⚠️</span>
           <p>No se pudieron cargar tus partidos: {error}</p>
         </div>
       )}
 
       {!loading && !error && registrations.length === 0 && (
-        <div className="my-matches-empty">
+        <div className={styles.empty}>
           <span>🏟️</span>
           <p>No estás apuntado a ningún partido todavía.</p>
-          <button onClick={() => navigate("/")}>Ver partidos disponibles →</button>
+          <button className={styles.emptyBtn} onClick={() => navigate("/")}>
+            Ver partidos disponibles →
+          </button>
         </div>
       )}
 
       {!loading && !error && registrations.length > 0 && (
-        <div className="matches-list">
+        <div className={styles.list}>
           {registrations.map((reg) => {
             const match = reg.match;
             const dt = formatDate(match.starts_at);
@@ -136,51 +136,50 @@ export default function MyMatches() {
             return (
               <article
                 key={reg.id}
-                className="match-card"
+                className={styles.card}
                 onClick={() => navigate(`/matches/${match.id}`)}
-                style={{ cursor: "pointer" }}
               >
-                <div className="card-date-band">
-                  <span className="date-day">{dt.weekday}</span>
-                  <span className="date-number">{dt.day}</span>
-                  <span className="date-month">{dt.month}</span>
-                  <span className="date-time">{dt.time}</span>
+                <div className={styles.dateBand}>
+                  <span className={styles.dateDay}>{dt.weekday}</span>
+                  <span className={styles.dateNumber}>{dt.day}</span>
+                  <span className={styles.dateMonth}>{dt.month}</span>
+                  <span className={styles.dateTime}>{dt.time}</span>
                 </div>
 
-                <div className="card-content">
-                  <div className="card-header">
-                    <div className="title-row">
-                      <h3 className="match-title">{match.match_type} · {match.city}</h3>
-                      <span className="match-type-chip">{match.match_type}</span>
+                <div className={styles.cardContent}>
+                  <div className={styles.cardHeader}>
+                    <div className={styles.titleRow}>
+                      <h3 className={styles.matchTitle}>{match.match_type} · {match.city}</h3>
+                      <span className={styles.matchTypeChip}>{match.match_type}</span>
                     </div>
                     <span
-                      className="spot-badge"
+                      className={styles.spotBadge}
                       style={{ "--badge-color": status.color }}
                     >
                       {status.label}
                     </span>
                   </div>
 
-                  <div className="card-meta">
-                    <span className="meta-item">
+                  <div className={styles.cardMeta}>
+                    <span className={styles.metaItem}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
                       </svg>
                       {match.location_name} — {match.address}
                     </span>
-                    <span className="meta-item">
+                    <span className={styles.metaItem}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
                       </svg>
                       {match.duration} min
                     </span>
-                    <span className="meta-item">
+                    <span className={styles.metaItem}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                       </svg>
                       {LEVEL_LABELS[match.required_level] ?? match.required_level}
                     </span>
-                    <span className="meta-item">
+                    <span className={styles.metaItem}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                       </svg>
@@ -188,8 +187,8 @@ export default function MyMatches() {
                     </span>
                   </div>
 
-                  <div className="card-footer">
-                    <span className="registration-date">
+                  <div className={styles.cardFooter}>
+                    <span className={styles.registrationDate}>
                       Apuntado el {new Date(reg.created_at).toLocaleDateString("es-ES", { day: "numeric", month: "long" })}
                     </span>
                   </div>

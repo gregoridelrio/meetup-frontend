@@ -1,0 +1,279 @@
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 36px 24px 80px;
+}
+
+/* ── HEADER ── */
+.header {
+  margin-bottom: 32px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 6vw, 58px);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  color: var(--green-dark);
+  margin-bottom: 6px;
+}
+
+.sub {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* ── STATS BAR ── */
+.statsBar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 20px;
+  min-width: 90px;
+  flex: 1;
+}
+
+.statVal {
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 1;
+  color: var(--green-dark);
+}
+
+.statLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-top: 4px;
+  text-align: center;
+}
+
+/* ── STATE BOXES ── */
+.error,
+.empty {
+  text-align: center;
+  padding: 48px 24px;
+  border: 2px dashed var(--border);
+  border-radius: 16px;
+  background: var(--white);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.emptyBtn {
+  margin-top: 8px;
+  padding: 10px 24px;
+  background: var(--green-main);
+  color: var(--cream);
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.emptyBtn:hover {
+  background: var(--green-dark);
+}
+
+/* ── MATCH LIST ── */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  display: flex;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  animation: slideUp 0.35s ease both;
+}
+
+.card:hover {
+  border-color: var(--green-main);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(72, 161, 17, 0.1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── DATE BAND ── */
+.dateBand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 18px;
+  background: var(--green-dark);
+  min-width: 72px;
+  gap: 2px;
+}
+
+.dateDay {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #a8d88a;
+}
+
+.dateNumber {
+  font-family: var(--font-display);
+  font-size: 40px;
+  line-height: 1;
+  color: var(--cream);
+}
+
+.dateMonth {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #7ab55a;
+}
+
+.dateTime {
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--yellow);
+  font-weight: 600;
+}
+
+/* ── CARD CONTENT ── */
+.cardContent {
+  flex: 1;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.matchTitle {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.matchTypeChip {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--bg-subtle);
+  color: var(--green-main);
+  border: 1px solid #c8e8b0;
+  text-transform: uppercase;
+}
+
+.spotBadge {
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--badge-color) 12%, transparent);
+  color: var(--badge-color);
+  border: 1.5px solid color-mix(in srgb, var(--badge-color) 35%, transparent);
+}
+
+.cardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.metaItem svg {
+  flex-shrink: 0;
+  color: var(--green-main);
+}
+
+.cardFooter {
+  margin-top: 4px;
+}
+
+.registrationDate {
+  font-size: 12px;
+  color: var(--text-faint);
+  font-style: italic;
+}
+
+@media (max-width: 540px) {
+  .dateBand {
+    padding: 16px 12px;
+    min-width: 58px;
+  }
+
+  .dateNumber {
+    font-size: 30px;
+  }
+
+  .cardContent {
+    padding: 14px 16px;
+  }
+
+  .statsBar {
+    gap: 8px;
+  }
+
+  .stat {
+    padding: 10px 14px;
+    min-width: 70px;
+  }
+}
