@@ -407,3 +407,70 @@
     padding: 24px 16px 100px;
   }
 }
+
+.matchId {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  background: var(--bg-subtle);
+  color: var(--green-main);
+  border: 1px solid #c8e8b0;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 28px;
+}
+
+.submitActions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.cancelBtn {
+  padding: 12px 20px;
+  background: transparent;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.cancelBtn:hover {
+  border-color: #c4b8b8;
+  color: var(--text);
+}
+
+.skeletonCard {
+  height: 180px;
+  background: #ede6e6;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  animation: pulse 1.5s ease infinite;
+}
+
+.skeletonHeader {
+  height: 80px;
+  background: #dde8d8;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  animation: pulse 1.5s ease infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.45;
+  }
+}
