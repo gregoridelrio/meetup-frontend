@@ -193,7 +193,6 @@ export default function MatchesIndex() {
     <div className={styles.page}>
       <header className={styles.header}>
         <div className={styles.eyebrow}>
-          <div className={styles.eyebrowIcon}>⚽</div>
           <span className={styles.eyebrowText}>Partidos disponibles</span>
         </div>
         <h1 className={styles.title}>

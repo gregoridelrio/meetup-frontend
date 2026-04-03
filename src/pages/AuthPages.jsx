@@ -36,7 +36,6 @@ const LeftPanel = () => (
   <div className={styles.panelLeft}>
     <a href="/" className={styles.alogo}>
       <div className={styles.logo}>
-        <div className={styles.logoIcon}>⚽</div>
         <span className={styles.logoName}>Meetup Football</span>
       </div>
     </a>
