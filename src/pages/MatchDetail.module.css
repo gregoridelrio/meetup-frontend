@@ -870,4 +870,16 @@
   .detailWrap {
     padding: 20px 16px 100px;
   }
+
+  .heroDateBlock {
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    gap: 12px;
+    padding: 14px 20px;
+  }
+
+  .heroDay {
+    font-size: 36px;
+  }
 }
