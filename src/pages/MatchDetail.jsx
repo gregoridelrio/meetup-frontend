@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import styles from "./MatchDetail.module.css";
 
 const API_BASE_URL = "/api";
 
@@ -48,7 +49,7 @@ const formatRelative = (str) => {
 };
 
 const BackButton = ({ onClick }) => (
-  <button className="back-btn" onClick={onClick}>
+  <button className={styles.backBtn} onClick={onClick}>
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
       <polyline points="15 18 9 12 15 6" />
     </svg>
@@ -63,28 +64,26 @@ const HeroSection = ({ match, isOrganizer, isAdmin, onEdit, onDelete }) => {
   const canEdit = isOrganizer || isAdmin;
 
   return (
-    <div className="hero">
-      <div className="hero-bg">
-        <div className="hero-pitch-lines" aria-hidden="true">
-          <div className="pitch-circle" />
-          <div className="pitch-line-v" />
-          <div className="pitch-arc" />
-        </div>
+    <div className={styles.hero}>
+      <div className={styles.heroBg} aria-hidden="true">
+        <div className={styles.pitchCircle} />
+        <div className={styles.pitchLineV} />
+        <div className={styles.pitchArc} />
       </div>
-      <div className="hero-content">
-        <div className="hero-date-block">
-          <span className="hero-weekday">{dt.weekday}</span>
-          <span className="hero-day">{dt.day}</span>
-          <span className="hero-month">{dt.month}</span>
+      <div className={styles.heroContent}>
+        <div className={styles.heroDateBlock}>
+          <span className={styles.heroWeekday}>{dt.weekday}</span>
+          <span className={styles.heroDay}>{dt.day}</span>
+          <span className={styles.heroMonth}>{dt.month}</span>
         </div>
-        <div className="hero-info">
-          <div className="hero-top-row">
-            <span className="hero-type-chip">{match.match_type}</span>
-            <span className="hero-status-badge" style={{ "--sc": status.color }}>
+        <div className={styles.heroInfo}>
+          <div className={styles.heroTopRow}>
+            <span className={styles.heroTypeChip}>{match.match_type}</span>
+            <span className={styles.heroStatusBadge} style={{ "--sc": status.color }}>
               {status.label}
             </span>
             {canEdit && (
-              <button className="hero-edit-btn" onClick={onEdit}>
+              <button className={styles.heroEditBtn} onClick={onEdit}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                   <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
@@ -93,7 +92,7 @@ const HeroSection = ({ match, isOrganizer, isAdmin, onEdit, onDelete }) => {
               </button>
             )}
             {isAdmin && (
-              <button className="hero-delete-btn" onClick={onDelete}>
+              <button className={styles.heroDeleteBtn} onClick={onDelete}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <polyline points="3 6 5 6 21 6" />
                   <path d="M19 6l-1 14H6L5 6" />
@@ -105,21 +104,21 @@ const HeroSection = ({ match, isOrganizer, isAdmin, onEdit, onDelete }) => {
               </button>
             )}
           </div>
-          <h1 className="hero-title">
+          <h1 className={styles.heroTitle}>
             Fútbol {match.match_type}
-            <span className="hero-city"> · {match.city}</span>
+            <span className={styles.heroCity}> · {match.city}</span>
           </h1>
-          <p className="hero-description">{match.description}</p>
-          <div className="hero-pills">
-            <span className="pill pill-time">
+          <p className={styles.heroDescription}>{match.description}</p>
+          <div className={styles.heroPills}>
+            <span className={styles.pill}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
               {dt.time} · {match.duration} min
             </span>
-            <span className="pill pill-price">
+            <span className={`${styles.pill} ${styles.pillPrice}`}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>
               {price === 0 ? "Gratis" : `${price}€/persona`}
             </span>
-            <span className="pill pill-level">
+            <span className={styles.pill}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
               {LEVEL_LABELS[match.required_level] ?? match.required_level}
             </span>
@@ -133,28 +132,28 @@ const HeroSection = ({ match, isOrganizer, isAdmin, onEdit, onDelete }) => {
 const InfoGrid = ({ match, registrationCount = 0 }) => {
   const spotsLeft = match.max_players - registrationCount;
   return (
-    <div className="info-grid">
-      <div className="info-card info-card--location">
-        <div className="info-icon">
+    <div className={styles.infoGrid}>
+      <div className={styles.infoCard}>
+        <div className={styles.infoIcon}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
         </div>
         <div>
-          <div className="info-label">Ubicación</div>
-          <div className="info-value">{match.location_name}</div>
-          <div className="info-sub">{match.address}, {match.city}</div>
+          <div className={styles.infoLabel}>Ubicación</div>
+          <div className={styles.infoValue}>{match.location_name}</div>
+          <div className={styles.infoSub}>{match.address}, {match.city}</div>
         </div>
       </div>
-      <div className="info-card info-card--players">
-        <div className="info-icon">
+      <div className={styles.infoCard}>
+        <div className={styles.infoIcon}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
         </div>
         <div>
-          <div className="info-label">Jugadores</div>
-          <div className="info-value">{registrationCount} / {match.max_players}</div>
-          <div className="info-sub">{spotsLeft > 0 ? `${spotsLeft} plazas libres` : "Sin plazas"}</div>
+          <div className={styles.infoLabel}>Jugadores</div>
+          <div className={styles.infoValue}>{registrationCount} / {match.max_players}</div>
+          <div className={styles.infoSub}>{spotsLeft > 0 ? `${spotsLeft} plazas libres` : "Sin plazas"}</div>
         </div>
-        <div className="players-bar">
-          <div className="players-bar-fill" style={{ width: `${Math.min((registrationCount / match.max_players) * 100, 100)}%` }} />
+        <div className={styles.playersBar}>
+          <div className={styles.playersBarFill} style={{ width: `${Math.min((registrationCount / match.max_players) * 100, 100)}%` }} />
         </div>
       </div>
     </div>
@@ -162,24 +161,24 @@ const InfoGrid = ({ match, registrationCount = 0 }) => {
 };
 
 const OrganizerCard = ({ organizer }) => (
-  <div className="organizer-card">
-    <div className="organizer-avatar-lg">{organizer.name[0].toUpperCase()}</div>
-    <div className="organizer-body">
-      <div className="organizer-header">
+  <div className={styles.organizerCard}>
+    <div className={styles.organizerAvatarLg}>{organizer.name[0].toUpperCase()}</div>
+    <div className={styles.organizerBody}>
+      <div className={styles.organizerHeader}>
         <div>
-          <div className="organizer-name">{organizer.name}</div>
-          <div className="organizer-meta">
+          <div className={styles.organizerName}>{organizer.name}</div>
+          <div className={styles.organizerMeta}>
             {POSITION_LABELS[organizer.favourite_position] ?? organizer.favourite_position}
             {" · "}
             {LEVEL_LABELS[organizer.skill_level] ?? organizer.skill_level}
           </div>
         </div>
-        <span className="rank-badge">{organizer.rank}</span>
+        <span className={styles.rankBadge}>{organizer.rank}</span>
       </div>
-      <div className="organizer-stats">
-        <div className="org-stat">
-          <span className="org-stat-val">{organizer.activity_score}</span>
-          <span className="org-stat-label">Actividad</span>
+      <div className={styles.organizerStats}>
+        <div className={styles.orgStat}>
+          <span className={styles.orgStatVal}>{organizer.activity_score}</span>
+          <span className={styles.orgStatLabel}>Actividad</span>
         </div>
       </div>
     </div>
@@ -202,7 +201,7 @@ const CommentsSection = ({ matchId, isAuth, token, user }) => {
         const data = await res.json();
         setComments(Array.isArray(data) ? data : data.data ?? []);
       } catch {
-        // silencioso, los comentarios no son críticos
+        // silencioso
       } finally {
         setLoading(false);
       }
@@ -226,8 +225,6 @@ const CommentsSection = ({ matchId, isAuth, token, user }) => {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message ?? "Error al comentar");
-
-      // Añade el comentario inmediatamente con los datos del usuario actual
       const newComment = {
         ...data.comment,
         user: {
@@ -249,56 +246,48 @@ const CommentsSection = ({ matchId, isAuth, token, user }) => {
     }
   };
 
-  const LEVEL_LABELS = {
-    beginner: "Principiante",
-    intermediate: "Intermedio",
-    advanced: "Avanzado",
-  };
-
   if (loading) return <p>Cargando comentarios...</p>;
 
   return (
     <div>
       {comments.length === 0 ? (
-        <div className="comments-empty">
+        <div className={styles.commentsEmpty}>
           <span>💬</span>
           <p>Nadie ha comentado aún. ¡Sé el primero!</p>
         </div>
       ) : (
-        <div className="comments-list">
+        <div className={styles.commentsList}>
           {comments.map((c, i) => (
-            <div key={c.id} className="comment-item" style={{ animationDelay: `${i * 50}ms` }}>
-              <div className="comment-avatar">
+            <div key={c.id} className={styles.commentItem} style={{ animationDelay: `${i * 50}ms` }}>
+              <div className={styles.commentAvatar}>
                 {c.user?.name?.[0]?.toUpperCase() ?? "#"}
               </div>
-              <div className="comment-body">
-                <div className="comment-meta">
-                  <strong className="comment-author">{c.user?.name}</strong>
-                  <span className="comment-skill">
+              <div className={styles.commentBody}>
+                <div className={styles.commentMeta}>
+                  <strong className={styles.commentAuthor}>{c.user?.name}</strong>
+                  <span className={styles.commentSkill}>
                     {LEVEL_LABELS[c.user?.skill_level] ?? c.user?.skill_level}
                   </span>
-                  <span className="comment-rank">{c.user?.rank}</span>
+                  <span className={styles.commentRank}>{c.user?.rank}</span>
                 </div>
-                <div className="comment-content">{c.content}</div>
-                <div className="comment-time">{formatRelative(c.created_at)}</div>
+                <div className={styles.commentContent}>{c.content}</div>
+                <div className={styles.commentTime}>{formatRelative(c.created_at)}</div>
               </div>
             </div>
           ))}
         </div>
       )}
-
-      {/* Formulario — solo si está autenticado */}
       {isAuth && (
-        <form onSubmit={handleSubmit} className="comment-form">
+        <form onSubmit={handleSubmit} className={styles.commentForm}>
           <input
             type="text"
-            className="comment-input"
+            className={styles.commentInput}
             placeholder="Escribe un comentario..."
             value={content}
             onChange={(e) => setContent(e.target.value)}
             disabled={sending}
           />
-          <button className="comment-submit" type="submit" disabled={sending || !content.trim()}>
+          <button className={styles.commentSubmit} type="submit" disabled={sending || !content.trim()}>
             {sending ? "Enviando..." : "Enviar"}
           </button>
         </form>
@@ -335,28 +324,28 @@ const PlayersList = ({ matchId, token }) => {
   if (loading) return <p>Cargando jugadores...</p>;
 
   if (players.length === 0) return (
-    <div className="players-empty">
+    <div className={styles.playersEmpty}>
       <span>👥</span>
       <p>Aún no hay jugadores apuntados.</p>
     </div>
   );
 
   return (
-    <div className="players-list">
+    <div className={styles.playersList}>
       {players.map((reg) => (
-        <div key={reg.id} className="player-item">
-          <div className="player-avatar">
+        <div key={reg.id} className={styles.playerItem}>
+          <div className={styles.playerAvatar}>
             {reg.user.name[0].toUpperCase()}
           </div>
-          <div className="player-info">
-            <span className="player-name">{reg.user.name}</span>
-            <span className="player-meta">
+          <div className={styles.playerInfo}>
+            <span className={styles.playerName}>{reg.user.name}</span>
+            <span className={styles.playerMeta}>
               {LEVEL_LABELS[reg.user.skill_level] ?? reg.user.skill_level}
               {" · "}
               {POSITION_LABELS[reg.user.favourite_position] ?? reg.user.favourite_position}
             </span>
           </div>
-          <span className="player-rank">{reg.user.rank}</span>
+          <span className={styles.playerRank}>{reg.user.rank}</span>
         </div>
       ))}
     </div>
@@ -370,7 +359,7 @@ const JoinBar = ({ match, registrationCount, isJoined, onJoin, onLeave, joining 
   const spotsLeft = match.max_players - registrationCount;
 
   const getLabel = () => {
-    if (joining) return <><div className="btn-spinner" />Procesando...</>;
+    if (joining) return <><div className={styles.btnSpinner} />Procesando...</>;
     if (isClosed) return match.status === "cancelled" ? "Cancelado" : "Finalizado";
     if (isJoined) return "Abandonar partido";
     if (isFull) return "Partido completo";
@@ -378,10 +367,10 @@ const JoinBar = ({ match, registrationCount, isJoined, onJoin, onLeave, joining 
   };
 
   return (
-    <div className="join-bar">
-      <div className="join-bar-info">
-        <span className="join-bar-price">{price === 0 ? "Gratis" : `${price}€`}</span>
-        <span className="join-bar-spots">
+    <div className={styles.joinBar}>
+      <div className={styles.joinBarInfo}>
+        <span className={styles.joinBarPrice}>{price === 0 ? "Gratis" : `${price}€`}</span>
+        <span className={styles.joinBarSpots}>
           {isClosed ? ""
             : isFull && !isJoined ? "Sin plazas disponibles"
               : isJoined ? "Ya estás apuntado"
@@ -389,7 +378,7 @@ const JoinBar = ({ match, registrationCount, isJoined, onJoin, onLeave, joining 
         </span>
       </div>
       <button
-        className={`join-bar-btn${isJoined ? " join-bar-btn--leave" : ""}`}
+        className={`${styles.joinBarBtn} ${isJoined ? styles.joinBarBtnLeave : ""}`}
         disabled={(!isJoined && (isFull || isClosed)) || joining}
         onClick={() => isJoined ? onLeave() : onJoin()}
       >
@@ -400,12 +389,12 @@ const JoinBar = ({ match, registrationCount, isJoined, onJoin, onLeave, joining 
 };
 
 const DetailSkeleton = () => (
-  <div className="detail-skeleton">
-    <div className="sk-hero" />
-    <div className="sk-body">
-      <div className="sk-line w60" />
-      <div className="sk-line w40" />
-      <div className="sk-line w80" />
+  <div className={styles.detailSkeleton}>
+    <div className={styles.skHero} />
+    <div className={styles.skBody}>
+      <div className={`${styles.skLine} ${styles.w60}`} />
+      <div className={`${styles.skLine} ${styles.w40}`} />
+      <div className={`${styles.skLine} ${styles.w80}`} />
     </div>
   </div>
 );
@@ -511,18 +500,16 @@ export default function MatchDetail() {
 
   return (
     <>
-      <style>{`/* ... tu CSS aquí sin cambios ... */`}</style>
-
-      <div className="detail-wrap">
+      <div className={styles.detailWrap}>
         <BackButton onClick={() => navigate("/")} />
 
         {loading && <DetailSkeleton />}
 
         {!loading && error && (
-          <div className="error-box">
-            <div className="error-icon">⚠️</div>
-            <div className="error-title">No se pudo cargar el partido</div>
-            <div className="error-sub">Error: {error}</div>
+          <div className={styles.errorBox}>
+            <div className={styles.errorIcon}>⚠️</div>
+            <div className={styles.errorTitle}>No se pudo cargar el partido</div>
+            <div className={styles.errorSub}>Error: {error}</div>
           </div>
         )}
 
@@ -536,21 +523,16 @@ export default function MatchDetail() {
               onDelete={handleDelete}
             />
             <InfoGrid match={match} registrationCount={registrationCount} />
-            <div className="section" style={{ animationDelay: "60ms" }}>
-              <div className="section-title">
-                Jugadores
-              </div>
+            <div className={styles.section} style={{ animationDelay: "60ms" }}>
+              <div className={styles.sectionTitle}>Jugadores</div>
               <PlayersList matchId={id} token={token} />
             </div>
-            <div className="section" style={{ animationDelay: "60ms" }}>
-              <div className="section-title">Organizador</div>
+            <div className={styles.section} style={{ animationDelay: "80ms" }}>
+              <div className={styles.sectionTitle}>Organizador</div>
               <OrganizerCard organizer={match.organizer} />
             </div>
-            <div className="section" style={{ animationDelay: "120ms" }}>
-              <div className="section-title">
-                Comentarios
-                <span className="section-title-count">{match.comments?.length ?? 0}</span>
-              </div>
+            <div className={styles.section} style={{ animationDelay: "100ms" }}>
+              <div className={styles.sectionTitle}>Comentarios</div>
               <CommentsSection
                 matchId={id}
                 isAuth={isAuth}
@@ -563,7 +545,7 @@ export default function MatchDetail() {
       </div>
 
       {joinFeedback && (
-        <div className={`join-toast join-toast--${joinFeedback.type}`}>
+        <div className={`${styles.joinToast} ${joinFeedback.type === "success" ? styles.joinToastSuccess : styles.joinToastError}`}>
           {joinFeedback.type === "success" ? "✓" : "⚠"} {joinFeedback.msg}
         </div>
       )}
