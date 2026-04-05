@@ -233,6 +233,9 @@ export default function MatchesIndex() {
           <MatchCard key={match.id ?? i} match={match} index={i} />
         ))}
       </div>
+      <footer className={styles.footer}>
+        <p>© 2026 Futbol Meetup. Solo con fines educativos.</p>
+      </footer>
     </div>
   );
 }
