@@ -434,6 +434,27 @@ export default function MatchDetail() {
     fetchMatch();
   }, [id]);
 
+  useEffect(() => {
+    if (!isAuth || !token) return;
+
+    const checkIfJoined = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/users/matches`, {
+          headers: { Accept: "application/json", Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        const matches = Array.isArray(data) ? data : data.data ?? [];
+        const joined = matches.some((reg) => reg.match?.id === Number(id));
+        setIsJoined(joined);
+      } catch {
+        // silencioso
+      }
+    };
+
+    checkIfJoined();
+  }, [isAuth, token, id]);
+
   const showFeedback = (type, msg) => {
     setJoinFeedback({ type, msg });
     setTimeout(() => setJoinFeedback(null), 3500);
@@ -523,10 +544,12 @@ export default function MatchDetail() {
               onDelete={handleDelete}
             />
             <InfoGrid match={match} registrationCount={registrationCount} />
-            <div className={styles.section} style={{ animationDelay: "60ms" }}>
-              <div className={styles.sectionTitle}>Jugadores</div>
-              <PlayersList matchId={id} token={token} />
-            </div>
+            {isAuth && (
+              <div className={styles.section} style={{ animationDelay: "60ms" }}>
+                <div className={styles.sectionTitle}>Jugadores</div>
+                <PlayersList matchId={id} token={token} />
+              </div>
+            )}
             <div className={styles.section} style={{ animationDelay: "80ms" }}>
               <div className={styles.sectionTitle}>Organizador</div>
               <OrganizerCard organizer={match.organizer} />
