@@ -15,7 +15,13 @@ const MAX_PLAYERS_BY_TYPE = { "5v5": 10, "7v7": 14, "11v11": 22 };
 
 const extractErrors = (err) => {
   if (err?.errors) return err.errors;
-  if (err?.message) return { _global: [err.message] };
+  if (err?.message) {
+    // Si el mensaje contiene SQL o es técnico, mostramos uno genérico
+    if (err.message.includes("SQLSTATE") || err.message.includes("SQL")) {
+      return { _global: ["No se ha podido guardar el partido. Revisa que todos los campos estén rellenos."] };
+    }
+    return { _global: [err.message] };
+  }
   return { _global: ["Ha ocurrido un error inesperado."] };
 };
 

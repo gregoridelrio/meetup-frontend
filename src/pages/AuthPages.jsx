@@ -87,6 +87,9 @@ export function LoginPage() {
       <LeftPanel />
       <div className={styles.panelRight}>
         <div className={styles.formWrap}>
+          <Link to="/" className={styles.backHome}>
+            ← Volver al inicio
+          </Link>
           <h1 className={styles.heading}>Bienvenido</h1>
           <p className={styles.subheading}>
             ¿No tienes cuenta?{" "}
@@ -147,6 +150,9 @@ export function RegisterPage() {
       <LeftPanel />
       <div className={styles.panelRight}>
         <div className={styles.formWrap}>
+          <Link to="/" className={styles.backHome}>
+            ← Volver al inicio
+          </Link>
           <h1 className={styles.heading}>Crear cuenta</h1>
           <p className={styles.subheading}>
             ¿Ya tienes cuenta?{" "}
