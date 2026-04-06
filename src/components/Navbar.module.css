@@ -266,16 +266,12 @@
 }
 
 .mobileItemPrimary {
-  background: var(--green-main);
-  color: var(--cream);
-  margin: 8px 16px;
-  border-radius: var(--radius-md);
-  justify-content: center;
-  font-weight: 700;
+  color: var(--green-main);
+  font-weight: 600;
 }
 
 .mobileItemPrimary:hover {
-  background: var(--green-dark);
+  background: var(--bg-subtle);
 }
 
 /* ── OFFSET ── */
