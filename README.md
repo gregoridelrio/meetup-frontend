@@ -1,16 +1,46 @@
-# React + Vite
+# Meetup Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend de Meetup Football, una plataforma para organizar y unirse a partidos de fútbol.  
+Construido con React y Vite, ofrece una experiencia completa de usuario con autenticación, inscripción a partidos, comentarios y control de permisos.
 
-Currently, two official plugins are available:
+## Tecnologías
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React + Vite
+- React Router para navegación
+- Context API para autenticación
+- CSS modular (`*.module.css`)
+- Fetch API para comunicación con backend
 
-## React Compiler
+## Instalación
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. Clona el repositorio:
+```bash
+git clone https://github.com/gregoridelrio/meetup-frontend.git
+cd meetup-frontend
+```
 
-## Expanding the ESLint configuration
+2. Instala las dependencias:
+```bash
+npm install
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+3. Levantar servidor de desarrollo
+```bash
+npm run dev
+```
+
+3. Una vez iniciado el servidor, accede a:
+```bash
+http://localhost:5173
+```
+
+## Estructura principal
+```bash
+src/
+├─ components/        # Componentes reutilizables
+├─ context/           # AuthContext
+├─ pages/             # Vistas principales (MatchesIndex, MatchDetail)
+├─ router/            # Rutas protegidas
+├─ styles/            # CSS modules
+└─ main.jsx           # Punto de entrada Vite
+```
