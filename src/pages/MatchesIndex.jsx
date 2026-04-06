@@ -231,7 +231,7 @@ export default function MatchesIndex() {
         ))}
       </div>
       <footer className={styles.footer}>
-        <p>© 2026 Futbol Meetup. Solo con fines educativos.</p>
+        <span>Meetup Football · 2026 · Solo para fines educativos</span>
       </footer>
     </div>
   );

@@ -870,16 +870,102 @@
   .detailWrap {
     padding: 20px 16px 100px;
   }
+}
 
-  .heroDateBlock {
-    width: 100%;
-    flex-direction: row;
-    justify-content: center;
-    gap: 12px;
-    padding: 14px 20px;
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  padding: 32px 28px;
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  animation: scaleIn 0.2s ease;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
   }
 
-  .heroDay {
-    font-size: 36px;
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
+}
+
+.modalIcon {
+  font-size: 44px;
+  margin-bottom: 16px;
+}
+
+.modalTitle {
+  font-family: var(--font-display);
+  font-size: 26px;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.modalText {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+
+.modalActions {
+  display: flex;
+  gap: 10px;
+}
+
+.modalCancel {
+  flex: 1;
+  padding: 11px;
+  background: transparent;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.modalCancel:hover {
+  border-color: #c4b8b8;
+  color: var(--text);
+}
+
+.modalConfirm {
+  flex: 1;
+  padding: 11px;
+  background: var(--error);
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--white);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.modalConfirm:hover {
+  background: #c94e20;
+  transform: scale(1.02);
 }
