@@ -399,6 +399,25 @@ const DetailSkeleton = () => (
   </div>
 );
 
+const ConfirmModal = ({ onConfirm, onCancel }) => (
+  <div className={styles.modalOverlay} onClick={onCancel}>
+    <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+      <h2 className={styles.modalTitle}>Eliminar partido</h2>
+      <p className={styles.modalText}>
+        Esta acción no se puede deshacer. ¿Seguro que quieres eliminar este partido?
+      </p>
+      <div className={styles.modalActions}>
+        <button className={styles.modalCancel} onClick={onCancel}>
+          Cancelar
+        </button>
+        <button className={styles.modalConfirm} onClick={onConfirm}>
+          Sí, eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
 export default function MatchDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -412,6 +431,7 @@ export default function MatchDetail() {
   const [isJoined, setIsJoined] = useState(false);
   const [joining, setJoining] = useState(false);
   const [joinFeedback, setJoinFeedback] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     const fetchMatch = async () => {
@@ -482,7 +502,11 @@ export default function MatchDetail() {
   }, [token, id]);
 
   const handleDelete = useCallback(async () => {
-    if (!window.confirm("¿Seguro que quieres eliminar este partido?")) return;
+    setShowDeleteModal(true);
+  }, []);
+
+  const confirmDelete = useCallback(async () => {
+    setShowDeleteModal(false);
     try {
       const res = await fetch(`${API_BASE_URL}/matches/${id}`, {
         method: "DELETE",
@@ -558,6 +582,12 @@ export default function MatchDetail() {
           onJoin={handleJoin}
           onLeave={handleLeave}
           joining={joining}
+        />
+      )}
+      {showDeleteModal && (
+        <ConfirmModal
+          onConfirm={confirmDelete}
+          onCancel={() => setShowDeleteModal(false)}
         />
       )}
     </>

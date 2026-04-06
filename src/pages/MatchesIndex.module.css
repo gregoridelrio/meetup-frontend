@@ -433,6 +433,15 @@
   color: var(--green-main);
 }
 
+.footer {
+  margin-top: 48px;
+  padding: 24px 0;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-faint);
+}
+
 /* ── RESPONSIVE ── */
 @media (max-width: 540px) {
   .dateBand {
